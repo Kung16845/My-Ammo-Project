@@ -184,6 +184,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  sprintMultiplier: 1.5
+  staminaMax: 100
+  staminaDepletionRate: 25
+  staminaRegenRate: 20
+  currentStamina: 0
+  currentSpeed: 0
 --- !u!114 &-5517311221835231460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,8 +203,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
+  currentAmmo: 0
   currentAmmoPistol: 0
-  maxAmmoPistol: 0
+  currentAmmoShotgun: 0
+  currentAssaultRifle: 0
+  maxAmmo: 0
+  spawnedBullet: []
+  isReload: 0
+  reloadSpeed: 0
   bulletPrefab: {fileID: 8021950095931618432, guid: d52ec051260953a449116acbc89aa292, type: 3}
   bulletspeed: 100
   direction: {x: 0, y: 0}
