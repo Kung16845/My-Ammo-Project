@@ -1094,8 +1094,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1782708647}
-  - component: {fileID: 1782708648}
   - component: {fileID: 1782708649}
+  - component: {fileID: 1782708648}
   m_Layer: 0
   m_Name: Login Manager
   m_TagString: Untagged
@@ -1380,4 +1380,4 @@ MonoBehaviour:
     EnableNetworkLogs: 1
     OldPrefabList: []
   RunInBackground: 1
-  LogLevel: 0
+  LogLevel: 1

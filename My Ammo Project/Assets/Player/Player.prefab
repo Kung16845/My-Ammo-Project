@@ -197,10 +197,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
-  currentInMags: 0
-  maxMags: 0
+  currentAmmoPistol: 0
+  maxAmmoPistol: 0
   bulletPrefab: {fileID: 8021950095931618432, guid: d52ec051260953a449116acbc89aa292, type: 3}
-  bulletspeed: 10
+  bulletspeed: 100
+  direction: {x: 0, y: 0}
+  weaponType: 0
 --- !u!1 &8330088176317482786
 GameObject:
   m_ObjectHideFlags: 0
