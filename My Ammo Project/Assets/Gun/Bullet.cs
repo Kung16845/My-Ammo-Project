@@ -6,27 +6,24 @@ public class Bullet : NetworkBehaviour
 {
     public float damage;
     public Vector2 startLocal;
+    public Gun gun;
+    
     private void Awake()
     {
         startLocal = new Vector2(transform.position.x, transform.position.y);
+
     }
     private void Update()
     {
-        if (IsOwner)
+        if (!IsOwner) { return; }
+
+        var currenposition = new Vector2(this.transform.position.x, this.transform.position.y);
+        if (Vector2.Distance(startLocal, currenposition) > 20)
         {
-            var currenposition = new Vector2(transform.position.x, transform.position.y);
-            if (Vector2.Distance(startLocal, currenposition) > 20)
-            {
-                DestroyBulletServerRpc();
-            }
+            gun.DestroyBulletServerRpc(GetComponent<NetworkObject>().NetworkObjectId);
         }
     }
 
-    [ServerRpc]
-    public void DestroyBulletServerRpc()
-    {
-        GetComponent<NetworkObject>().Despawn();
-        Destroy(gameObject);
-    }
+
 
 }
