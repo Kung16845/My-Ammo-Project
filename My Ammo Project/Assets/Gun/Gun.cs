@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 using System.Diagnostics;
+using System.Linq;
 public class Gun : NetworkBehaviour
 {
     public enum WeaponType { Pistol, Shotgun, AssaultRifle }
@@ -30,10 +31,13 @@ public class Gun : NetworkBehaviour
         if (!IsOwner) return;
 
         // AimAtMouseServerRpc();
-        ChangeWeapon();
+        ChangeWeaponServerRpc();
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            ShootBulletServerRpc();
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePosition - (Vector2)transform.position).normalized;
+            ShootBulletServerRpc(direction);
+
             if (currentAmmo > 0)
             {
                 StopAllCoroutines(); // หยุดการรีโหลด
@@ -47,38 +51,49 @@ public class Gun : NetworkBehaviour
 
 
     }
-    
     [ServerRpc]
-    private void AimAtMouseServerRpc()
+    void ShootBulletServerRpc(Vector2 direction)
     {
         
-    }
-    [ServerRpc]
-    void ShootBulletServerRpc()
-    {  
-                
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        direction = (mousePosition - (Vector2)transform.position).normalized;                
-    
         if (this.currentAmmo > 0)
         {
             currentAmmo--;
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            GameObject bullet = Instantiate(bulletPrefab, this.transform.position, this.transform.rotation);
             spawnedBullet.Add(bullet);
+
+            if (weaponType == WeaponType.Shotgun)
+            {
+
+            }
+
             Rigidbody2D rbbullet = bullet.GetComponent<Rigidbody2D>();
 
             var bulletScript = bullet.GetComponent<Bullet>();
             bulletScript.damage = this.damage;
+            bulletScript.gun = this;
 
             rbbullet.AddForce(direction * bulletspeed, ForceMode2D.Impulse);
-            bullet.GetComponent<NetworkObject>().Spawn(true);
+            bullet.GetComponent<NetworkObject>().Spawn();
         }
         else if (!isReload)
         {
             StartCoroutine(ReloadGun());
         }
     }
-    void ChangeWeapon()
+    [ServerRpc (RequireOwnership = false)]
+    public void DestroyBulletServerRpc(ulong networkObjectID)
+    {
+        GameObject bulletDestroy = spawnedBullet.FirstOrDefault(iDObject =>
+        iDObject.GetComponent<NetworkObject>().NetworkObjectId == networkObjectID);
+
+        if (bulletDestroy is null) return;
+
+        bulletDestroy.GetComponent<NetworkObject>().Despawn();
+        spawnedBullet.Remove(bulletDestroy);
+        Destroy(bulletDestroy);
+    }
+    [ServerRpc]
+    void ChangeWeaponServerRpc()
     {
         if (Input.GetKey(KeyCode.Alpha3))
         {
