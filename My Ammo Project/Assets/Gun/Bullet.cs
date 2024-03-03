@@ -27,9 +27,17 @@ public class Bullet : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        ulong networkObjectIDBullet = GetComponent<NetworkObject>().NetworkObjectId;
+
         if (other.gameObject.tag == "Wall")
         {
-            gun.DestroyBulletServerRpc(GetComponent<NetworkObject>().NetworkObjectId);
+            gun.DestroyBulletServerRpc(networkObjectIDBullet);
+        }
+        if(other.gameObject.tag == "Enemy")
+        {   
+            // other.GetComponent<Monster>().TakeDamageServerRpc(damage);
+            other.GetComponent<Monster>().spawnMonster.DestroyMonsterServerRpc(other.GetComponent<NetworkObject>().NetworkObjectId);
+            gun.DestroyBulletServerRpc(networkObjectIDBullet);
         }
     }
 
