@@ -35,8 +35,8 @@ public class Bullet : NetworkBehaviour
         }
         if(other.gameObject.tag == "Enemy")
         {   
-            // other.GetComponent<Monster>().TakeDamageServerRpc(damage);
-            other.GetComponent<Monster>().spawnMonster.DestroyMonsterServerRpc(other.GetComponent<NetworkObject>().NetworkObjectId);
+            // other.GetComponent<Monster>().spawnMonster.DestroyMonsterServerRpc(other.GetComponent<NetworkObject>().NetworkObjectId);
+            other.GetComponent<Enemy>().TakeDamageEnemyServerRpc(damage);
             gun.DestroyBulletServerRpc(networkObjectIDBullet);
         }
     }
