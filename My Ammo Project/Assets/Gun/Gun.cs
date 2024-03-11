@@ -20,6 +20,7 @@ public class Gun : NetworkBehaviour
     public WeaponType weaponType;
     public AmmoManager ammoManager;
     public ChangeWeapon changeWeapon;
+    public InventoryAmmo inventoryAmmo;
     private void Start()
     {
         ammoManager = GameObject.FindObjectOfType<AmmoManager>();
@@ -32,7 +33,6 @@ public class Gun : NetworkBehaviour
         if (!IsOwner) return;
 
         // AimAtMouseServerRpc();
-        // changeWeapon.ChangeTypeWeapon();
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -52,7 +52,7 @@ public class Gun : NetworkBehaviour
 
         }
     }
-    
+
     [ServerRpc]
     void ReloadGunServerRpc()
     {
@@ -71,33 +71,45 @@ public class Gun : NetworkBehaviour
     [ServerRpc]
     void ShootBulletServerRpc(Vector2 direction)
     {
-
         if (this.currentAmmo > 0)
         {
             currentAmmo--;
-            GameObject bullet = Instantiate(bulletPrefab, this.transform.position, this.transform.rotation);
-            spawnedBullet.Add(bullet);
 
             if (weaponType == WeaponType.Shotgun)
             {
-
+                for (int i = 0; i < 12; i++)
+                {
+                    Vector2 spreadDirection = Quaternion.Euler(0, 0, UnityEngine.Random.Range(-15f, 15f)) * direction;
+                    SpawnBulletWithDirection(spreadDirection);
+                }
             }
-
-            Rigidbody2D rbbullet = bullet.GetComponent<Rigidbody2D>();
-
-            var bulletScript = bullet.GetComponent<Bullet>();
-            bulletScript.damage = this.damage;
-            bulletScript.gun = this;
-
-            rbbullet.AddForce(direction * bulletspeed, ForceMode2D.Impulse);
-            bullet.GetComponent<NetworkObject>().Spawn();
+            else
+            {
+                // For other weapon types, like pistol or assault rifle
+                SpawnBulletWithDirection(direction);
+            }
         }
         else if (!isReload)
         {
             reloadgun = StartCoroutine(ReloadGun());
-
         }
     }
+
+    void SpawnBulletWithDirection(Vector2 direction)
+    {
+        GameObject bullet = Instantiate(bulletPrefab, this.transform.position, this.transform.rotation);
+        spawnedBullet.Add(bullet);
+
+        Rigidbody2D rbbullet = bullet.GetComponent<Rigidbody2D>();
+        rbbullet.AddForce(direction * bulletspeed, ForceMode2D.Impulse);
+
+        var bulletScript = bullet.GetComponent<Bullet>();
+        bulletScript.damage = this.damage;
+        bulletScript.gun = this;
+
+        bullet.GetComponent<NetworkObject>().Spawn();
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void DestroyBulletServerRpc(ulong networkObjectID)
     {
