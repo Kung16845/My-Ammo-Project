@@ -49,7 +49,7 @@ public class Gun : NetworkBehaviour
                     reloadgun = null;
                 }
                 isReload = false;
-                ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
+             ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
             }
         }
         if (Input.GetKey(KeyCode.R) && !isReload)
@@ -150,8 +150,6 @@ public class Gun : NetworkBehaviour
 
     public IEnumerator ReloadGun()
     {
-
-
         isReload = true;
         if (weaponType != WeaponType.Shotgun)
         {
