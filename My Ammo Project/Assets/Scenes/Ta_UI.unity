@@ -2549,8 +2549,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1837849236}
-  - component: {fileID: 1837849238}
   - component: {fileID: 1837849237}
+  - component: {fileID: 1837849238}
   m_Layer: 0
   m_Name: Ammo
   m_TagString: Untagged
@@ -2606,7 +2606,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d123de2f4b5e7b64ba16c2d259aa585b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammoTextMeshPro: {fileID: 0}
 --- !u!1 &1956734484
 GameObject:
   m_ObjectHideFlags: 0
