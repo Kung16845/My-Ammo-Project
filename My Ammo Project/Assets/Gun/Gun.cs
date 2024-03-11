@@ -20,9 +20,11 @@ public class Gun : NetworkBehaviour
     public GameObject bulletPrefab;
     public float bulletspeed = 100f;
     public Vector2 direction;
+    public Coroutine reloadgun;
     public WeaponType weaponType;
     private void Start()
     {
+
         InitializeWeapon();
     }
     void Update()
@@ -40,13 +42,18 @@ public class Gun : NetworkBehaviour
 
             if (currentAmmo > 0)
             {
-                StopAllCoroutines(); // หยุดการรีโหลด
+                // หยุดการรีโหลด
+                if (reloadgun != null)
+                {
+                    StopCoroutine(reloadgun);
+                    reloadgun = null;
+                }
                 isReload = false;
             }
         }
         if (Input.GetKey(KeyCode.R) && !isReload)
         {
-            StartCoroutine(ReloadGun());
+            reloadgun = StartCoroutine(ReloadGun());
         }
 
 
@@ -54,7 +61,7 @@ public class Gun : NetworkBehaviour
     [ServerRpc]
     void ShootBulletServerRpc(Vector2 direction)
     {
-        
+
         if (this.currentAmmo > 0)
         {
             currentAmmo--;
@@ -77,10 +84,11 @@ public class Gun : NetworkBehaviour
         }
         else if (!isReload)
         {
-            StartCoroutine(ReloadGun());
+            reloadgun = StartCoroutine(ReloadGun());
+
         }
     }
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void DestroyBulletServerRpc(ulong networkObjectID)
     {
         GameObject bulletDestroy = spawnedBullet.FirstOrDefault(iDObject =>
@@ -138,6 +146,8 @@ public class Gun : NetworkBehaviour
 
     public IEnumerator ReloadGun()
     {
+
+
         isReload = true;
         if (weaponType != WeaponType.Shotgun)
         {
@@ -149,8 +159,8 @@ public class Gun : NetworkBehaviour
             isReload = true;
             yield return new WaitForSeconds(reloadSpeed);
             currentAmmo++;
-            if (currentAmmo < maxAmmo)
-                StartCoroutine(ReloadGun());
+            if (currentAmmo < maxAmmo) { }
+            StartCoroutine(ReloadGun());
         }
         isReload = false;
     }
