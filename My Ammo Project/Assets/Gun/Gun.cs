@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 public class Gun : NetworkBehaviour
 {
-    public enum WeaponType { Pistol, Shotgun, AssaultRifle }
     public float damage;
     public int currentAmmo;
     public int currentAmmoPistol;
@@ -22,9 +21,10 @@ public class Gun : NetworkBehaviour
     public Vector2 direction;
     public Coroutine reloadgun;
     public WeaponType weaponType;
+    public AmmoManager ammoManager;
     private void Start()
     {
-
+        ammoManager = GameObject.FindObjectOfType<AmmoManager>();
         InitializeWeapon();
     }
     void Update()
@@ -49,6 +49,7 @@ public class Gun : NetworkBehaviour
                     reloadgun = null;
                 }
                 isReload = false;
+                ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
             }
         }
         if (Input.GetKey(KeyCode.R) && !isReload)
@@ -107,16 +108,19 @@ public class Gun : NetworkBehaviour
         {
             weaponType = WeaponType.Pistol;
             InitializeWeapon();
+            ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
         }
         else if (Input.GetKey(KeyCode.Alpha2))
         {
             weaponType = WeaponType.Shotgun;
             InitializeWeapon();
+            ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
         }
         else if (Input.GetKey(KeyCode.Alpha1))
         {
             weaponType = WeaponType.AssaultRifle;
             InitializeWeapon();
+            ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
         }
     }
     void InitializeWeapon()
@@ -153,6 +157,7 @@ public class Gun : NetworkBehaviour
         {
             yield return new WaitForSeconds(reloadSpeed);
             currentAmmo = maxAmmo;
+            ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
         }
         else
         {
@@ -165,3 +170,4 @@ public class Gun : NetworkBehaviour
         isReload = false;
     }
 }
+public enum WeaponType { Pistol, Shotgun, AssaultRifle }
