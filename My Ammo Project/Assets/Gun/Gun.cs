@@ -21,6 +21,7 @@ public class Gun : NetworkBehaviour
     public AmmoManager ammoManager;
     public ChangeWeapon changeWeapon;
     public InventoryAmmo inventoryAmmo;
+    
     private void Start()
     {
         ammoManager = GameObject.FindObjectOfType<AmmoManager>();
