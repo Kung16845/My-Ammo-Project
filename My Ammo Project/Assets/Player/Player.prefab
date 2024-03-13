@@ -97,9 +97,11 @@ GameObject:
   - component: {fileID: 7694520307102289082}
   - component: {fileID: 9186659018717791205}
   - component: {fileID: -5517311221835231460}
+  - component: {fileID: 252287699561532624}
+  - component: {fileID: -2485925046217590158}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -204,9 +206,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 0
   currentAmmo: 0
-  currentAmmoPistol: 0
-  currentAmmoShotgun: 0
-  currentAssaultRifle: 0
   maxAmmo: 0
   spawnedBullet: []
   isReload: 0
@@ -215,6 +214,38 @@ MonoBehaviour:
   bulletspeed: 100
   direction: {x: 0, y: 0}
   weaponType: 0
+  ammoManager: {fileID: 0}
+  changeWeapon: {fileID: 0}
+--- !u!114 &252287699561532624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947449959776718493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948ccf9c2ebce6b49bcd2b02312b852a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHp: 0
+  maxHp: 0
+--- !u!114 &-2485925046217590158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947449959776718493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd68eb40b823c04e9d175f626f49636, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gun: {fileID: 0}
+  currentAmmoPistol: 7
+  currentAmmoShotgun: 4
+  currentAmmoAssaultRifle: 30
 --- !u!1 &8330088176317482786
 GameObject:
   m_ObjectHideFlags: 0

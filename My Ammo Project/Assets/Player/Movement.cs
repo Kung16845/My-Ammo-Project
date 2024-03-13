@@ -52,4 +52,5 @@ public class Movement : NetworkBehaviour
             currentStamina = Mathf.Clamp(currentStamina, 0f, staminaMax);
         }
     }
+    
 }

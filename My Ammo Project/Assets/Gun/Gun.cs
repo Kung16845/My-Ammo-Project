@@ -7,12 +7,8 @@ using System.Diagnostics;
 using System.Linq;
 public class Gun : NetworkBehaviour
 {
-    public enum WeaponType { Pistol, Shotgun, AssaultRifle }
     public float damage;
     public int currentAmmo;
-    public int currentAmmoPistol;
-    public int currentAmmoShotgun;
-    public int currentAssaultRifle;
     public int maxAmmo;
     public List<GameObject> spawnedBullet = new List<GameObject>();
     public bool isReload;
@@ -20,10 +16,17 @@ public class Gun : NetworkBehaviour
     public GameObject bulletPrefab;
     public float bulletspeed = 100f;
     public Vector2 direction;
+    public Coroutine reloadgun;
     public WeaponType weaponType;
+    public AmmoManager ammoManager;
+    public ChangeWeapon changeWeapon;
+    public InventoryAmmo inventoryAmmo;
+    
     private void Start()
     {
-        InitializeWeapon();
+        ammoManager = GameObject.FindObjectOfType<AmmoManager>();
+        changeWeapon = GetComponent<ChangeWeapon>();
+        changeWeapon.gun = this;
     }
     void Update()
     {
@@ -31,7 +34,6 @@ public class Gun : NetworkBehaviour
         if (!IsOwner) return;
 
         // AimAtMouseServerRpc();
-        ChangeWeaponServerRpc();
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -40,47 +42,76 @@ public class Gun : NetworkBehaviour
 
             if (currentAmmo > 0)
             {
-                StopAllCoroutines(); // หยุดการรีโหลด
-                isReload = false;
+                // หยุดการรีโหลด
+                CancelReloadServerRpc();
+                // ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
             }
         }
         if (Input.GetKey(KeyCode.R) && !isReload)
         {
-            StartCoroutine(ReloadGun());
+            ReloadGunServerRpc();
+
         }
+    }
 
-
+    [ServerRpc]
+    void ReloadGunServerRpc()
+    {
+        reloadgun = StartCoroutine(ReloadGun());
+    }
+    [ServerRpc]
+    void CancelReloadServerRpc()
+    {
+        if (reloadgun != null)
+        {
+            StopCoroutine(reloadgun);
+            reloadgun = null;
+        }
+        isReload = false;
     }
     [ServerRpc]
     void ShootBulletServerRpc(Vector2 direction)
     {
-        
         if (this.currentAmmo > 0)
         {
             currentAmmo--;
-            GameObject bullet = Instantiate(bulletPrefab, this.transform.position, this.transform.rotation);
-            spawnedBullet.Add(bullet);
 
             if (weaponType == WeaponType.Shotgun)
             {
-
+                for (int i = 0; i < 12; i++)
+                {
+                    Vector2 spreadDirection = Quaternion.Euler(0, 0, UnityEngine.Random.Range(-15f, 15f)) * direction;
+                    SpawnBulletWithDirection(spreadDirection);
+                }
             }
-
-            Rigidbody2D rbbullet = bullet.GetComponent<Rigidbody2D>();
-
-            var bulletScript = bullet.GetComponent<Bullet>();
-            bulletScript.damage = this.damage;
-            bulletScript.gun = this;
-
-            rbbullet.AddForce(direction * bulletspeed, ForceMode2D.Impulse);
-            bullet.GetComponent<NetworkObject>().Spawn();
+            else
+            {
+                // For other weapon types, like pistol or assault rifle
+                SpawnBulletWithDirection(direction);
+            }
         }
         else if (!isReload)
         {
-            StartCoroutine(ReloadGun());
+            reloadgun = StartCoroutine(ReloadGun());
         }
     }
-    [ServerRpc (RequireOwnership = false)]
+
+    void SpawnBulletWithDirection(Vector2 direction)
+    {
+        GameObject bullet = Instantiate(bulletPrefab, this.transform.position, this.transform.rotation);
+        spawnedBullet.Add(bullet);
+
+        Rigidbody2D rbbullet = bullet.GetComponent<Rigidbody2D>();
+        rbbullet.AddForce(direction * bulletspeed, ForceMode2D.Impulse);
+
+        var bulletScript = bullet.GetComponent<Bullet>();
+        bulletScript.damage = this.damage;
+        bulletScript.gun = this;
+
+        bullet.GetComponent<NetworkObject>().Spawn();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     public void DestroyBulletServerRpc(ulong networkObjectID)
     {
         GameObject bulletDestroy = spawnedBullet.FirstOrDefault(iDObject =>
@@ -92,49 +123,7 @@ public class Gun : NetworkBehaviour
         spawnedBullet.Remove(bulletDestroy);
         Destroy(bulletDestroy);
     }
-    [ServerRpc]
-    void ChangeWeaponServerRpc()
-    {
-        if (Input.GetKey(KeyCode.Alpha3))
-        {
-            weaponType = WeaponType.Pistol;
-            InitializeWeapon();
-        }
-        else if (Input.GetKey(KeyCode.Alpha2))
-        {
-            weaponType = WeaponType.Shotgun;
-            InitializeWeapon();
-        }
-        else if (Input.GetKey(KeyCode.Alpha1))
-        {
-            weaponType = WeaponType.AssaultRifle;
-            InitializeWeapon();
-        }
-    }
-    void InitializeWeapon()
-    {
-        switch (weaponType)
-        {
-            case WeaponType.Pistol:
-                damage = 45;
-                maxAmmo = 7;
-                currentAmmo = maxAmmo;
-                reloadSpeed = 3.0f;
-                break;
-            case WeaponType.Shotgun:
-                damage = 70;
-                maxAmmo = 4;
-                currentAmmo = maxAmmo;
-                reloadSpeed = 1.0f;
-                break;
-            case WeaponType.AssaultRifle:
-                damage = 45;
-                maxAmmo = 30;
-                currentAmmo = maxAmmo;
-                reloadSpeed = 2.5f;
-                break;
-        }
-    }
+
 
     public IEnumerator ReloadGun()
     {
@@ -143,15 +132,19 @@ public class Gun : NetworkBehaviour
         {
             yield return new WaitForSeconds(reloadSpeed);
             currentAmmo = maxAmmo;
+            // ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
         }
         else
         {
-            isReload = true;
+
             yield return new WaitForSeconds(reloadSpeed);
             currentAmmo++;
             if (currentAmmo < maxAmmo)
+            {
                 StartCoroutine(ReloadGun());
+            }
         }
         isReload = false;
     }
 }
+public enum WeaponType { Pistol, Shotgun, AssaultRifle }

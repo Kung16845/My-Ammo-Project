@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Varit.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 0
+    path: Assets/Scenes/TA_movement.unity
+    guid: bd8686bc4593648488b29ece4657e3cf
+  - enabled: 0
+    path: Assets/Scenes/Ta_UI.unity
+    guid: fb35e8ff190030643ac44e872f601d74
   m_configObjects: {}
