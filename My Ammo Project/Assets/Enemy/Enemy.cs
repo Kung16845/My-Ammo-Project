@@ -32,7 +32,7 @@ public class Enemy : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D other) 
     {   
         var objBarrier = other.GetComponent<Barrier>();
-        Debug.Log(objBarrier);
+        // Debug.Log(objBarrier);
         if(objBarrier != null)
         {   
             
