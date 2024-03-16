@@ -323,6 +323,7 @@ MonoBehaviour:
   maxAmmo: 0
   spawnedBullet: []
   isReload: 0
+  isCanReload: 0
   reloadSpeed: 0
   bulletPrefab: {fileID: 8021950095931618432, guid: d52ec051260953a449116acbc89aa292, type: 3}
   bulletspeed: 100
@@ -416,6 +417,7 @@ MonoBehaviour:
   rayPoint: {fileID: 3791355194560663973}
   rayRadius: 2.5
   grabbedObject: {fileID: 0}
+  boxSpwaner: {fileID: 0}
 --- !u!114 &355455585209008113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,9 +433,10 @@ MonoBehaviour:
   currentReserveAmmoPistol: 0
   maxReserveAmmoPistol: 30
   currentReserveAmmoAssaultRifle: 0
-  macReserveAmmoAssaultRifle: 60
+  maxReserveAmmoAssaultRifle: 60
   currentReserveAmmoShotgun: 0
-  MaxReserveAmmoShotgun: 12
+  maxReserveAmmoShotgun: 12
+  gun: {fileID: -5517311221835231460}
 --- !u!1 &8330088176317482786
 GameObject:
   m_ObjectHideFlags: 0

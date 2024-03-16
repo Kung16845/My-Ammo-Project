@@ -2,30 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class InventoryAmmo : NetworkBehaviour
 {
     public int currentReserveAmmoPistol;
     public int maxReserveAmmoPistol;
     public int currentReserveAmmoAssaultRifle;
-    public int macReserveAmmoAssaultRifle;
+    public int maxReserveAmmoAssaultRifle;
     public int currentReserveAmmoShotgun;
-    public int MaxReserveAmmoShotgun;
-
-    public void RefillAmmo(WeaponType weaponType,int ammorefill)
+    public int maxReserveAmmoShotgun;
+    public Gun gun;
+    private void Start()
     {
-        if(weaponType == WeaponType.Pistol)
+        currentReserveAmmoAssaultRifle = maxReserveAmmoAssaultRifle;
+        currentReserveAmmoShotgun = maxReserveAmmoShotgun;
+        currentReserveAmmoPistol = maxReserveAmmoPistol;
+    }
+
+    [ServerRpc]
+    public void RefillAmmoServerRpc(WeaponType weaponType, int ammorefill)
+    {
+        if (weaponType == WeaponType.Pistol)
         {
             currentReserveAmmoPistol -= ammorefill;
         }
-        else if(weaponType == WeaponType.Shotgun)
+        else if (weaponType == WeaponType.Shotgun)
         {
             currentReserveAmmoShotgun -= ammorefill;
         }
-        else if(weaponType == WeaponType.AssaultRifle)
+        else if (weaponType == WeaponType.AssaultRifle)
         {
             currentReserveAmmoAssaultRifle -= ammorefill;
         }
     }
-    
+    [ServerRpc(RequireOwnership = false)]
+    public void CheckCurrentReserveAmmoServerRpc(WeaponType weaponType)
+    {
+        if (weaponType == WeaponType.Pistol)
+        {
+            gun.isCanReload = currentReserveAmmoPistol > 0 ? true : false;
+        }
+        else if (weaponType == WeaponType.Shotgun)
+        {
+            gun.isCanReload = currentReserveAmmoShotgun > 0 ? true : false;
+        }
+        else if (weaponType == WeaponType.AssaultRifle)
+        {
+            gun.isCanReload = currentReserveAmmoAssaultRifle > 0 ? true : false;
+        }
+    }
 }
