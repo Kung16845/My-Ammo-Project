@@ -7,11 +7,12 @@ TagManager:
   - Enemy
   - Wall
   - Barrier
+  - Item
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Objects
   - Water
   - UI
   - 

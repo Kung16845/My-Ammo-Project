@@ -9,6 +9,15 @@ using TMPro;
 
 public class LoginManager : MonoBehaviour
 {
+    public GameObject uILogin;
+    public void SetUILogin(bool open)
+    {
+
+        uILogin.SetActive(open);
+
+
+    }
+
     public void OnServerButtionClick()
     {
 
@@ -23,6 +32,7 @@ public class LoginManager : MonoBehaviour
             await RelayManagerScript.Instance.CreateRelay();
         }
         NetworkManager.Singleton.StartHost();
+        SetUILogin(false);
     }
     public TMP_InputField joinCodeInputField;
     public string joinCode;
@@ -34,6 +44,7 @@ public class LoginManager : MonoBehaviour
             await RelayManagerScript.Instance.JoinRelay(joinCode);
         }
         NetworkManager.Singleton.StartClient();
+        SetUILogin(false);
     }
 
 }
