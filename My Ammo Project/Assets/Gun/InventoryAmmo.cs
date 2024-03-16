@@ -20,7 +20,7 @@ public class InventoryAmmo : NetworkBehaviour
         currentReserveAmmoPistol = maxReserveAmmoPistol;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void RefillAmmoServerRpc(WeaponType weaponType, int ammorefill)
     {
         if (weaponType == WeaponType.Pistol)

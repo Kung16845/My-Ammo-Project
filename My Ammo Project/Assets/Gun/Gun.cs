@@ -22,7 +22,7 @@ public class Gun : NetworkBehaviour
     public AmmoManager ammoManager;
     public ChangeWeapon changeWeapon;
     public InventoryAmmo inventoryAmmo;
-
+    
     private void Start()
     {
         ammoManager = GameObject.FindObjectOfType<AmmoManager>();
@@ -51,9 +51,9 @@ public class Gun : NetworkBehaviour
             }
         }
         // เพิ่มเช็คกระสุน
-        // inventoryAmmo.CheckCurrentReserveAmmoServerRpc(weaponType);
+        inventoryAmmo.CheckCurrentReserveAmmoServerRpc(weaponType);
 
-        if (Input.GetKey(KeyCode.R) && !isReload)
+        if (Input.GetKey(KeyCode.R) && !isReload )
         {
             ReloadGunServerRpc();
         }
@@ -152,6 +152,7 @@ public class Gun : NetworkBehaviour
 
             yield return new WaitForSeconds(reloadSpeed);
             currentAmmo++;
+            inventoryAmmo.RefillAmmoServerRpc(weaponType, 1);
             if (currentAmmo < maxAmmo)
             {
                 StartCoroutine(ReloadGun());
