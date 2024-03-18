@@ -19,7 +19,6 @@ public class InventoryAmmo : NetworkBehaviour
         currentReserveAmmoShotgun = maxReserveAmmoShotgun;
         currentReserveAmmoPistol = maxReserveAmmoPistol;
     }
-
     [ServerRpc(RequireOwnership = false)]
     public void RefillAmmoServerRpc(WeaponType weaponType, int ammorefill)
     {
@@ -50,6 +49,20 @@ public class InventoryAmmo : NetworkBehaviour
         else if (weaponType == WeaponType.AssaultRifle)
         {
             gun.isCanReload = currentReserveAmmoAssaultRifle > 0 ? true : false;
+        }
+    }
+    public int currentReserveAmmo
+    {
+        get
+        {
+            if (gun.weaponType == WeaponType.Pistol)
+                return currentReserveAmmoPistol;
+            else if (gun.weaponType == WeaponType.Shotgun)
+                return currentReserveAmmoShotgun;
+            else if (gun.weaponType == WeaponType.AssaultRifle)
+                return currentReserveAmmoAssaultRifle;
+            else
+                return 0; // Handle the case when weaponType is not recognized
         }
     }
 }

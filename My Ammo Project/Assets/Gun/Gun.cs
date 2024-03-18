@@ -33,7 +33,7 @@ public class Gun : NetworkBehaviour
     }
     void Update()
     {
-
+        ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo, inventoryAmmo.currentReserveAmmo);
         if (!IsOwner) return;
 
         // AimAtMouseServerRpc();
@@ -47,14 +47,12 @@ public class Gun : NetworkBehaviour
             {
                 // หยุดการรีโหลด
                 CancelReloadServerRpc();
-
-                // ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
             }
         }
         // เพิ่มเช็คกระสุน
         inventoryAmmo.CheckCurrentReserveAmmoServerRpc(weaponType);
 
-        if (Input.GetKey(KeyCode.R) && !isReload )
+        if (Input.GetKey(KeyCode.R) && !isReload)
         {
             ReloadGunServerRpc();
         }
@@ -147,7 +145,7 @@ public class Gun : NetworkBehaviour
             inventoryAmmo.RefillAmmoServerRpc(weaponType, ammorefill);
             if(isReload)
                 currentAmmo = maxAmmo;
-            // ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
+            ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo, inventoryAmmo.currentReserveAmmo);
         }
         else
         {

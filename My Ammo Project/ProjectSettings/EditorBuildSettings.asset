@@ -17,7 +17,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Mainscene.unity
     guid: 45c9bf1cfe14dda4ea9a221d85e3bb84
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Mainscene 1.unity
     guid: 28ee8bd86ee06834882d5f7ecf620dc5
+  - enabled: 0
+    path: Assets/Scenes/Ta_UI1.unity
+    guid: 29c6c3dedcda4ee4aa5c286112a2d1de
+  - enabled: 1
+    path: Assets/Scenes/Ta_UI3.unity
+    guid: ee8be582a7247cf4a80ac632de8fb34b
   m_configObjects: {}
