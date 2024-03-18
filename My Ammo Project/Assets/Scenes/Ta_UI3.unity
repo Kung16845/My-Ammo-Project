@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &37271591 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3920681832546451567, guid: 6c0f98ff0061f244e829e33eabb3e9f4, type: 3}
-  m_PrefabInstance: {fileID: 1565996698}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &49967729
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,9 +570,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allBoxes:
   - {fileID: 3227149944274938653}
-  - {fileID: 1474534672}
-  - {fileID: 1739004320}
-  - {fileID: 37271591}
   prefebBagAmmo:
   - {fileID: 3920681832546451567, guid: 6c0f98ff0061f244e829e33eabb3e9f4, type: 3}
   listtransformsSpawnedBagAmmo: []
@@ -3727,7 +3719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1306707772
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4285,11 +4277,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1474534672 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3920681832546451567, guid: 6c0f98ff0061f244e829e33eabb3e9f4, type: 3}
-  m_PrefabInstance: {fileID: 63795717}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1564464126
 GameObject:
   m_ObjectHideFlags: 0
@@ -5124,11 +5111,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1739004320 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3920681832546451567, guid: 6c0f98ff0061f244e829e33eabb3e9f4, type: 3}
-  m_PrefabInstance: {fileID: 679625926}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1741990852
 GameObject:
   m_ObjectHideFlags: 0
@@ -6038,7 +6020,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2039264096}
-    PlayerPrefab: {fileID: 5397831059161432986, guid: d6677b28c3f60394595c25851a98aae2, type: 3}
+    PlayerPrefab: {fileID: 1562261615936257597, guid: d6677b28c3f60394595c25851a98aae2, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 3e2ab0412f55b9042890dd98f660bdf8, type: 2}
