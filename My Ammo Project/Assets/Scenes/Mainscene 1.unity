@@ -5641,6 +5641,14 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2880951173
       objectReference: {fileID: 0}
+    - target: {fileID: 8293481190214792528, guid: 6c0f98ff0061f244e829e33eabb3e9f4, type: 3}
+      propertyPath: DontDestroyWithOwner
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8293481190214792528, guid: 6c0f98ff0061f244e829e33eabb3e9f4, type: 3}
+      propertyPath: ActiveSceneSynchronization
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

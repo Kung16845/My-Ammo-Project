@@ -33,8 +33,8 @@ public class PlayerScrpt : NetworkBehaviour
 
             else
                 timer = 0;
-
         }
+        
     }
     [ServerRpc (RequireOwnership = false)]
     public void OpenBagServerRpc(ulong iDObjectbagAmmoNear, ServerRpcParams rpcParams = default)
