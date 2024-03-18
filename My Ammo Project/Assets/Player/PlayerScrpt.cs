@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Linq;
+
 public class PlayerScrpt : NetworkBehaviour
 {
     public float currentHp;
@@ -19,43 +20,59 @@ public class PlayerScrpt : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (bagAmmo != null)
-            OpenBagServerRpc();
-    }
-    [ServerRpc]
-    public void OpenBagServerRpc(ServerRpcParams rpcParams = default)
-    {
-        if (Input.GetKey(KeyCode.E))
         {
-            timer += Time.deltaTime;
-            if (timer >= holdTime)
+            if (Input.GetKey(KeyCode.E))
             {
-                bagAmmo.isOpening = true;
+                timer += Time.deltaTime;
+                if (timer >= holdTime)
+                {   
+                    ulong bagAmmoiDObject = bagAmmo.GetComponent<NetworkObject>().NetworkObjectId;
+                    OpenBagServerRpc(bagAmmoiDObject);
+                }
             }
-        }
 
-        else
-            timer = 0;
+            else
+                timer = 0;
+        }
+        
+    }
+    [ServerRpc (RequireOwnership = false)]
+    public void OpenBagServerRpc(ulong iDObjectbagAmmoNear, ServerRpcParams rpcParams = default)
+    {   
+        var bagAmmo = boxSpwaner.allBoxes.FirstOrDefault(bagid => bagid.GetComponent<NetworkObject>().NetworkObjectId ==
+             iDObjectbagAmmoNear).GetComponent<BagAmmo>();
+        bagAmmo.isOpening = true;
+        // if (Input.GetKey(KeyCode.E))
+        // {
+        //     timer += Time.deltaTime;
+        //     if (timer >= holdTime)
+        //     {
+        //         bagAmmo.isOpening = true;
+        //     }
+        // }
+
+        // else
+        //     timer = 0;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (IsOwner)
-        {
+        if (!IsOwner) return;
 
-            if (other.GetComponent<BagAmmo>() != null)
-            {
-                var bag = boxSpwaner.allBoxes.FirstOrDefault(bagid => bagid.GetComponent<NetworkObject>().NetworkObjectId ==
-                 other.GetComponent<NetworkObject>().NetworkObjectId);
-                this.bagAmmo = bag.GetComponent<BagAmmo>();
-            }
+        if (other.GetComponent<BagAmmo>() != null)
+        {
+            var bag = boxSpwaner.allBoxes.FirstOrDefault(bagid => bagid.GetComponent<NetworkObject>().NetworkObjectId ==
+             other.GetComponent<NetworkObject>().NetworkObjectId);
+            this.bagAmmo = bag.GetComponent<BagAmmo>();
         }
+
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (IsOwner)
-        {
-            this.bagAmmo = null;
-        }
+        if (!IsOwner) return;
+
+        this.bagAmmo = null;
+
     }
     [ServerRpc]
     public void TakeDamagePlayerServerRpc(float damage)
