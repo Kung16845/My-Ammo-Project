@@ -12,10 +12,7 @@ public class LoginManager : MonoBehaviour
     public GameObject uILogin;
     public void SetUILogin(bool open)
     {
-
         uILogin.SetActive(open);
-
-
     }
 
     public void OnServerButtionClick()

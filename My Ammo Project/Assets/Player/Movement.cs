@@ -19,23 +19,24 @@ public class Movement : NetworkBehaviour
 
     private Animator animator;
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;  
+    private SpriteRenderer spriteRenderer;
     private bool iswalk;
     public float currentStamina;
     public float currentSpeed; // Track current speed
-
-   private void Start()
+    private void Start()
     {
         currentStamina = staminaMax;
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         iswalk = false;
+
+
     }
 
     private void FixedUpdate()
     {
-        
+
         if (IsOwner)
         {
             float vertical = Input.GetAxis("Vertical");
@@ -72,8 +73,8 @@ public class Movement : NetworkBehaviour
             {
                 // Not sprinting - normal speed
                 currentSpeed = speed;
-                if(!Input.GetKey(KeyCode.LeftShift))
-                currentStamina += staminaRegenRate * Time.deltaTime;
+                if (!Input.GetKey(KeyCode.LeftShift))
+                    currentStamina += staminaRegenRate * Time.deltaTime;
             }
 
             // Apply movement

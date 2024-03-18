@@ -22,6 +22,7 @@ public class Gun : NetworkBehaviour
     public AmmoManager ammoManager;
     public ChangeWeapon changeWeapon;
     public InventoryAmmo inventoryAmmo;
+    public Camera cameraOwner;
     
     private void Start()
     {
@@ -38,7 +39,7 @@ public class Gun : NetworkBehaviour
         // AimAtMouseServerRpc();
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePosition = cameraOwner.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - (Vector2)transform.position).normalized;
             ShootBulletServerRpc(direction);
 
@@ -60,9 +61,10 @@ public class Gun : NetworkBehaviour
     }
 
     [ServerRpc]
-    void ReloadGunServerRpc()
-    {
-        reloadgun = StartCoroutine(ReloadGun());
+    void ReloadGunServerRpc(ServerRpcParams rpcParams = default)
+    {   
+        if(isCanReload)
+            reloadgun = StartCoroutine(ReloadGun());
     }
 
     [ServerRpc]

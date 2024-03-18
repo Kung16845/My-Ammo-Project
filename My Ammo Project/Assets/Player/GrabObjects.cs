@@ -12,11 +12,11 @@ public class GrabObjects : NetworkBehaviour
 
     public GameObject grabbedObject;
     private LayerMask objectLayer;
-    public BoxSpwaner boxSpwaner;
+    public BoxAmmoSpwaner boxSpwaner;
     private void Start()
     {
         objectLayer = LayerMask.GetMask("Objects");
-        boxSpwaner = FindObjectOfType<BoxSpwaner>();
+        boxSpwaner = FindObjectOfType<BoxAmmoSpwaner>();
     }
     private void Update()
     {
@@ -46,7 +46,7 @@ public class GrabObjects : NetworkBehaviour
     [ServerRpc]
     public void GrabObjectServerRpc(ulong objectID)
     {
-        var boxObject = boxSpwaner.listBoxes.FirstOrDefault(iDObject =>
+        var boxObject = boxSpwaner.allBoxes.FirstOrDefault(iDObject =>
         iDObject.GetComponent<NetworkObject>().NetworkObjectId == objectID);
         boxObject.GetComponent<Rigidbody2D>().isKinematic = true;
         boxObject.transform.position = grabPoint.position;
@@ -55,7 +55,7 @@ public class GrabObjects : NetworkBehaviour
     [ServerRpc]
     public void ReleaseObjectServerRpc(ulong objectID)
     {
-        var boxObject = boxSpwaner.listBoxes.FirstOrDefault(iDObject =>
+        var boxObject = boxSpwaner.allBoxes.FirstOrDefault(iDObject =>
         iDObject.GetComponent<NetworkObject>().NetworkObjectId == objectID);
         boxObject.GetComponent<Rigidbody2D>().isKinematic = false;
         boxObject.GetComponent<NetworkObject>().transform.SetParent(null);

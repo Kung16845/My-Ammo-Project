@@ -30,7 +30,7 @@ public class SpawnMonster : NetworkBehaviour
     [ServerRpc]
     public void SpawnMonsterServerRpc()
     {
-        var transformSpawnMonster = new Vector3(this.transform.position.x, Random.Range(-15.0f, 15.0f));
+        var transformSpawnMonster = new Vector3(this.transform.position.x, Random.Range(-4.0f, 4.0f));
         int n = Random.Range(0, 2);
         GameObject monster = Instantiate(prefabMonster[n], transformSpawnMonster, this.transform.rotation);
 
