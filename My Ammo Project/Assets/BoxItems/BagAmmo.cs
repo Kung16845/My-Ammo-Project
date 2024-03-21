@@ -21,17 +21,16 @@ public class BagAmmo : NetworkBehaviour
         //     OpenBagServerRpc();
         // }
 
-        if (isOpening)
-        {
-            RefillAmmoServerRpc();
-        }
+        // if (isOpening)
+        // {
+        //     RefillAmmoServerRpc();
+        // }
     }
     [ServerRpc(RequireOwnership = false)]
     public void RefillAmmoServerRpc(ServerRpcParams rpcParams = default)
     {
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
+        
             if (weaponType == WeaponType.Pistol)
             {
                 if (inventoryAmmo.currentReserveAmmoPistol + ammorefill <= inventoryAmmo.maxReserveAmmoPistol)
@@ -74,7 +73,7 @@ public class BagAmmo : NetworkBehaviour
                     inventoryAmmo.currentReserveAmmoAssaultRifle = inventoryAmmo.maxReserveAmmoAssaultRifle;
                 }
             }
-        }
+        
     }
    
     private void OnTriggerEnter2D(Collider2D other)
@@ -85,7 +84,7 @@ public class BagAmmo : NetworkBehaviour
         {
             isPlayerNear = true;
             inventoryAmmo = other.GetComponent<InventoryAmmo>();
-            
+            // other.GetComponent<PlayerScrpt>().bagAmmo = this;
         }
     }
     private void OnTriggerExit2D(Collider2D other)
@@ -96,7 +95,7 @@ public class BagAmmo : NetworkBehaviour
         {
             isPlayerNear = false;
             inventoryAmmo = null;
-            
+            // other.GetComponent<PlayerScrpt>().bagAmmo = null;
         }
     }
 }

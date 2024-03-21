@@ -23,7 +23,7 @@ public class Gun : NetworkBehaviour
     public ChangeWeapon changeWeapon;
     public InventoryAmmo inventoryAmmo;
     public Camera cameraOwner;
-    
+
     private void Start()
     {
         ammoManager = GameObject.FindObjectOfType<AmmoManager>();
@@ -54,7 +54,7 @@ public class Gun : NetworkBehaviour
         // เพิ่มเช็คกระสุน
         inventoryAmmo.CheckCurrentReserveAmmoServerRpc(weaponType);
 
-        if (Input.GetKey(KeyCode.R) && !isReload )
+        if (Input.GetKey(KeyCode.R) && !isReload)
         {
             ReloadGunServerRpc();
         }
@@ -62,9 +62,17 @@ public class Gun : NetworkBehaviour
 
     [ServerRpc]
     void ReloadGunServerRpc(ServerRpcParams rpcParams = default)
-    {   
-        if(isCanReload)
-            reloadgun = StartCoroutine(ReloadGun());
+    {
+        if (isCanReload)
+        {
+            if (reloadgun != null)
+            {
+                StopCoroutine(reloadgun);
+                reloadgun = null;
+            }
+
+            reloadgun = StartCoroutine(CallReloadGun());
+        }
     }
 
     [ServerRpc]
@@ -78,7 +86,7 @@ public class Gun : NetworkBehaviour
         isReload = false;
     }
     [ServerRpc]
-    void ShootBulletServerRpc(Vector2 direction)
+    void ShootBulletServerRpc(Vector2 direction, ServerRpcParams rpcParams = default)
     {
         inventoryAmmo.CheckCurrentReserveAmmoServerRpc(this.weaponType);
 
@@ -104,7 +112,13 @@ public class Gun : NetworkBehaviour
 
         else if (!isReload && isCanReload)
         {
-            reloadgun = StartCoroutine(ReloadGun());
+            if (reloadgun != null)
+            {
+                StopCoroutine(reloadgun);
+                reloadgun = null;
+            }
+
+            reloadgun = StartCoroutine(CallReloadGun());
         }
     }
 
@@ -136,7 +150,10 @@ public class Gun : NetworkBehaviour
         Destroy(bulletDestroy);
     }
 
-
+    public IEnumerator CallReloadGun()
+    {
+        yield return ReloadGun();
+    }
     public IEnumerator ReloadGun()
     {
         isReload = true;
@@ -144,9 +161,11 @@ public class Gun : NetworkBehaviour
         {
             yield return new WaitForSeconds(reloadSpeed);
             int ammorefill = maxAmmo - currentAmmo;
+
+
+            currentAmmo = maxAmmo;
             inventoryAmmo.RefillAmmoServerRpc(weaponType, ammorefill);
-            if(isReload)
-                currentAmmo = maxAmmo;
+
             // ammoManager.UpdateAmmoData(OwnerClientId, weaponType, currentAmmo);
         }
         else
@@ -157,7 +176,7 @@ public class Gun : NetworkBehaviour
             inventoryAmmo.RefillAmmoServerRpc(weaponType, 1);
             if (currentAmmo < maxAmmo)
             {
-                StartCoroutine(ReloadGun());
+                StartCoroutine(CallReloadGun());
             }
         }
         isReload = false;

@@ -10,13 +10,18 @@ public class Bullet : NetworkBehaviour
 
     private void Awake()
     {
-        // startLocal = new Vector2(transform.position.x, transform.position.y);
+        startLocal = new Vector2(transform.position.x, transform.position.y);
 
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!IsOwner) return;
+        if (!IsServer) return;
 
+        if (!IsSpawned)
+        {
+            return;
+        }
+        
         ulong networkObjectIDBullet = GetComponent<NetworkObject>().NetworkObjectId;
 
         if (other.gameObject.tag == "Wall")

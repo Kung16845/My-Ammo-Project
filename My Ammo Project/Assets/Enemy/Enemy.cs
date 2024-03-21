@@ -22,28 +22,28 @@ public class Enemy : NetworkBehaviour
         var objBarrier = FindObjectOfType<Barrier>().gameObject;
         // pointBarrier = new Vector2(objBarrier.transform.position.x, objBarrier.transform.position.y);
         target = objBarrier.transform;
-        
+
         currentspeed = speed;
         currentHp = maxHp;
         rb = GetComponent<Rigidbody2D>();
-        
+        spawnMonster = FindObjectOfType<SpawnMonster>();
+
     }
 
-    private void OnTriggerEnter2D(Collider2D other) 
-    {   
+    private void OnTriggerEnter2D(Collider2D other)
+    {
         var objBarrier = other.GetComponent<Barrier>();
         // Debug.Log(objBarrier);
-        if(objBarrier != null)
-        {   
-            
+        if (objBarrier != null)
+        {
             objBarrier.TakeDamageBarrierServerRpc(damage);
             this.GetComponent<Collider2D>().enabled = false;
         }
 
     }
-    
+
     [ServerRpc]
-    public void TakeDamageEnemyServerRpc(float damage)
+    public void TakeDamageEnemyServerRpc(float damage, ServerRpcParams rpcParams = default)
     {
         this.currentHp -= damage;
 
