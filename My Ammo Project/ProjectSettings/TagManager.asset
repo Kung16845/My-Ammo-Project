@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - Barrier
   - Item
+  - Slider
   layers:
   - Default
   - TransparentFX

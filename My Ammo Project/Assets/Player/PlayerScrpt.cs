@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Linq;
-
+using UnityEngine.UI;
 public class PlayerScrpt : NetworkBehaviour
 {
     public float currentHp;
@@ -12,14 +12,16 @@ public class PlayerScrpt : NetworkBehaviour
     public float timer = 0f;
     public BagAmmo bagAmmo;
     public BoxAmmoSpwaner boxSpwaner;
+    public Slider timerBar;
     private void Awake()
     {
         boxSpwaner = FindObjectOfType<BoxAmmoSpwaner>();
+        timerBar = GameObject.FindGameObjectWithTag("Slider").GetComponent<Slider>();
     }
     private void Update()
     {
         if (!IsOwner) return;
-        
+
         if (bagAmmo != null)
         {
             if (Input.GetKey(KeyCode.E))
@@ -35,7 +37,9 @@ public class PlayerScrpt : NetworkBehaviour
             else
                 timer = 0;
         }
-        if (bagAmmo != null && bagAmmo.isOpening)
+        UpdateTimerUI();
+
+        if (bagAmmo != null && bagAmmo.isOpening.Value)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -44,25 +48,33 @@ public class PlayerScrpt : NetworkBehaviour
         }
 
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void OpenBagServerRpc(ulong iDObjectbagAmmoNear, ServerRpcParams rpcParams = default)
+    void UpdateTimerUI()
     {
-        var bagAmmo = boxSpwaner.allBoxes.FirstOrDefault(bagid => bagid.GetComponent<NetworkObject>().NetworkObjectId ==
-             iDObjectbagAmmoNear).GetComponent<BagAmmo>();
-        bagAmmo.isOpening = true;
-        // if (Input.GetKey(KeyCode.E))
-        // {
-        //     timer += Time.deltaTime;
-        //     if (timer >= holdTime)
-        //     {
-        //         bagAmmo.isOpening = true;
-        //     }
-        // }
+        if (timer != 0 && !bagAmmo.isOpening.Value)
+        {
+            timerBar.gameObject.SetActive(true);
+            float ratio = timer / holdTime;
+            timerBar.value = ratio;
+        }
+        else
+        {
+            timerBar.gameObject.SetActive(false);
+        }
 
-        // else
-        //     timer = 0;
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void OpenBagServerRpc(ulong bagAmmoNetworkObjectId, ServerRpcParams rpcParams = default)
+    {
+        var bagAmmoNetworkObject = boxSpwaner.allBoxes.FirstOrDefault(bag => bag.GetComponent<NetworkObject>().NetworkObjectId == bagAmmoNetworkObjectId);
+
+        if (bagAmmoNetworkObject != null)
+        {
+            var bagAmmo = bagAmmoNetworkObject.GetComponent<BagAmmo>();
+            bagAmmo.isOpening.Value = true;
+        }
+
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;

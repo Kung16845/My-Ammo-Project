@@ -27,7 +27,7 @@ public class RaycastBagAmmo : NetworkBehaviour
                 timer += Time.deltaTime;
                 if (timer >= holdTime)
                 {
-                    hitInfo.collider.GetComponent<BagAmmo>().isOpening = true;
+                    hitInfo.collider.GetComponent<BagAmmo>().isOpening.Value = true;
                 }
             }
 
